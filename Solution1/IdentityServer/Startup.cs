@@ -22,7 +22,7 @@ namespace IdentityServer
         }
         public void ConfigureServices(IServiceCollection services)
         {
-
+          
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllHeaders",
@@ -54,6 +54,7 @@ namespace IdentityServer
                .AddDeveloperSigningCredential();
 
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,14 +66,24 @@ namespace IdentityServer
             }
 
             app.UseRouting();
-            app.UseCors("AllowAllHeaders");
+           app.UseCors(builder => builder
+                         .AllowAnyOrigin()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader());
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapDefaultControllerRoute();
+            //});
         }
     }
 }

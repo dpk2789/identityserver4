@@ -25,6 +25,10 @@ namespace WebApp.MVC.Controllers
         {
             return Challenge(new AuthenticationProperties() { RedirectUri = "Home/Index" },"oidc");
         }
+        public ActionResult Register()
+        {
+            return Challenge(new AuthenticationProperties() { RedirectUri = "Home/Index" }, "oidc");
+        }
 
         public ActionResult Logout()
         {
