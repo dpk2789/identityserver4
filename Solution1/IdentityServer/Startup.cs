@@ -13,6 +13,7 @@ namespace IdentityServer
     {
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
@@ -21,6 +22,18 @@ namespace IdentityServer
         }
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllHeaders",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+            });
+
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -37,6 +50,7 @@ namespace IdentityServer
                .AddInMemoryApiResources(ServerConfiguration.ApiResources)
                .AddInMemoryApiScopes(ServerConfiguration.ApiScopes)
               .AddAspNetIdentity<IdentityUser>()
+               .AddProfileService<ProfileService>()
                .AddDeveloperSigningCredential();
 
             services.AddControllersWithViews();
@@ -51,6 +65,7 @@ namespace IdentityServer
             }
 
             app.UseRouting();
+            app.UseCors("AllowAllHeaders");
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseAuthorization();

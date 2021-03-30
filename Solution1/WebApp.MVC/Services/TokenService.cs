@@ -34,7 +34,6 @@ namespace WebApp.MVC.Services
             var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 Address = _discoveryDocument.TokenEndpoint,
-
                 ClientId = _identityServerSettings.Value.ClientName,
                 ClientSecret = _identityServerSettings.Value.ClientPassword,
                 Scope = scope
