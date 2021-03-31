@@ -1,3 +1,4 @@
+using IdentityServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +23,7 @@ namespace IdentityServer
         }
         public void ConfigureServices(IServiceCollection services)
         {
-          
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllHeaders",

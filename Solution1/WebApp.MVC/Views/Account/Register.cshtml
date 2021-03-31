@@ -14,7 +14,7 @@
                     <tr class="success">
                         <th colspan="2">
                             New User Registration
-                            <a href="Login.html" class="btn btn-success pull-right">
+                            <a href="/Account/Login" class="btn btn-success pull-right">
                                 Login
                             </a>
                         </th>
@@ -94,12 +94,17 @@
             // Save the new user details
             $('#btnRegister').click(function () {
                 $.ajax({
-                    url: '/api/account/register',
+                    url: 'https://localhost:44311/connect/token',
                     method: 'POST',
                     data: {
+                        client_id: 'm2m.client',
+                        client_secret: 'secret',
+                        scope: 'read',
+                        grant_type: 'client_credentials',                       
                         email: $('#txtEmail').val(),
                         password: $('#txtPassword').val(),
                         confirmPassword: $('#txtConfirmPassword').val()
+                        
                     },
                     success: function () {
                         $('#successModal').modal('show');

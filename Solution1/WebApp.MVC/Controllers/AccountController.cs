@@ -3,9 +3,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using WebApp.MVC.Models;
 using WebApp.MVC.Services;
 
 namespace WebApp.MVC.Controllers
@@ -23,16 +27,48 @@ namespace WebApp.MVC.Controllers
 
         public ActionResult Login()
         {
-            return Challenge(new AuthenticationProperties() { RedirectUri = "Home/Index" },"oidc");
+            return Challenge(new AuthenticationProperties() { RedirectUri = "Home/Index" }, "oidc");
         }
         public ActionResult Register()
         {
-            return Challenge(new AuthenticationProperties() { RedirectUri = "Home/Index" }, "oidc");
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(RegisterViewModel registerViewModel)
+        {
+            using (var client = new HttpClient())
+            {
+                Uri u = new Uri("https://localhost:44311/api/account/registeruser");
+
+                var json = JsonConvert.SerializeObject(new { registerViewModel.email, registerViewModel.password });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                //var content = new FormUrlEncodedContent(new[]
+                //                {
+                //                    new KeyValuePair<string, string>("email",registerViewModel.email),
+                //                    new KeyValuePair<string, string>("password", registerViewModel.password)
+                //                  });
+                //HTTP POST
+                var postTask = client.PostAsync(u, content);
+                postTask.Wait();
+
+                var result = postTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+
+            return View();
+
         }
 
         public ActionResult Logout()
         {
-            return SignOut(new AuthenticationProperties() { RedirectUri = "Home/Index" },"oidc", "cookie");
+            return SignOut(new AuthenticationProperties() { RedirectUri = "Home/Index" }, "oidc", "cookie");
         }
 
         [Authorize]

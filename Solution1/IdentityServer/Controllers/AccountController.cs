@@ -1,10 +1,8 @@
 ﻿using IdentityServer.Models.Request;
 using IdentityServer.Models.Response;
+using IdentityServer.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,19 +14,19 @@ namespace IdentityServer.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IIdentityService _identityService;
 
-        public AccountController(UserManager<IdentityUser> userManager)
+        public AccountController(IIdentityService identityService)
         {
-            _userManager = userManager;
+            _identityService = identityService;
         }
 
-        [HttpGet]
-        [Route("api/getusers")]
-        public async Task<IReadOnlyList<IdentityUser>> Get()
-        {
-            return await _userManager.Users.ToListAsync();
-        }
+        //[HttpGet]
+        //[Route("api/getusers")]
+        //public async Task<IReadOnlyList<IdentityUser>> Get()
+        //{
+        //    return await _userManager.Users.ToListAsync();
+        //}
 
         // GET api/<AccountController>/5
         [HttpGet("{id}")]
@@ -41,7 +39,7 @@ namespace IdentityServer.Controllers
         [HttpPost]
         [Route("api/account/registeruser")]
         [AllowAnonymous]
-        public async Task<IActionResult> Post([FromBody] UserRegisterRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Postabc([FromBody] UserRegisterRequest request, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
             {
