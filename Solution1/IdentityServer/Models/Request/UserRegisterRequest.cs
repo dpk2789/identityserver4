@@ -7,5 +7,6 @@ namespace IdentityServer.Models.Request
         [EmailAddress]
         public string email { get; set; }
         public string password { get; set; }
+        public string Confirmpassword { get; set; }
     }
 }

@@ -35,34 +35,35 @@ namespace WebApp.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(RegisterViewModel registerViewModel)
+        public async Task<IActionResult> Register(RegisterViewModel registerViewModel)
         {
-            using (var client = new HttpClient())
+            if (ModelState.IsValid)
             {
-                Uri u = new Uri("https://localhost:44311/api/account/registeruser");
-
-                var json = JsonConvert.SerializeObject(new { registerViewModel.email, registerViewModel.password });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                //var content = new FormUrlEncodedContent(new[]
-                //                {
-                //                    new KeyValuePair<string, string>("email",registerViewModel.email),
-                //                    new KeyValuePair<string, string>("password", registerViewModel.password)
-                //                  });
-                //HTTP POST
-                var postTask = client.PostAsync(u, content);
-                postTask.Wait();
-
-                var result = postTask.Result;
-                if (result.IsSuccessStatusCode)
+                using (var client = new HttpClient())
                 {
-                    return RedirectToAction("Index");
+                    Uri u = new Uri("https://localhost:44311/api/account/registeruser");
+
+                    var json = JsonConvert.SerializeObject(new { registerViewModel.Email, registerViewModel.Password });
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    //var content = new FormUrlEncodedContent(new[]
+                    //                {
+                    //                    new KeyValuePair<string, string>("email",registerViewModel.email),
+                    //                    new KeyValuePair<string, string>("password", registerViewModel.password)
+                    //                  });
+                    //HTTP POST
+                    var postTask = await client.PostAsync(u, content);
+                    //postTask.Wait();
+                    //var result = postTask.Result;
+                    if (postTask.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
                 }
-            }
+            }          
 
-            ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
-
-            return View();
+            return View(registerViewModel);
 
         }
 

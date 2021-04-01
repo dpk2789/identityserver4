@@ -1,9 +1,16 @@
-﻿using IdentityServer.Models;
+﻿
+
+using IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -11,16 +18,18 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Services
 {
-    public class IdentityService : IIdentityService
+    public class IdentityService : PageModel, IIdentityService
     {
         private readonly UserManager<IdentityUser> _userManager;
 
-        public IdentityService(UserManager<IdentityUser> userManager)
+        public IdentityService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
         }
         public async Task<AuthResult> RegisterAsync(string email, string password)
         {
+            string returnUrl = null;
+            returnUrl = returnUrl ?? Url.Content("~/");
             var existingUser = await _userManager.FindByEmailAsync(email);
             if (existingUser != null)
             {
@@ -44,7 +53,7 @@ namespace IdentityServer.Services
                     ErrorMessages = createUser.Errors.Select(x => x.Description)
                 };
             }
-
+          
             return GenerateTokenForUserAuthResult(newUser);
         }
 
