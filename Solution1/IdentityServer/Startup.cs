@@ -44,8 +44,11 @@ namespace IdentityServer
              options.UseSqlServer(connectionString,
                  sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-              .AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<IdentityUser>)));
+            })
+             .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
             services.AddIdentityServer()
                .AddInMemoryClients(ServerConfiguration.Clients)

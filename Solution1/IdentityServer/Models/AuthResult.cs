@@ -7,5 +7,6 @@ namespace IdentityServer.Models
         public string Token { get; set; }
         public bool Success { get; set; }
         public IEnumerable<string> ErrorMessages { get; set; }
+        public List<ErrorViewModel> ErrorViewModelEnu { get; set; }
     }
 }

@@ -54,12 +54,13 @@ namespace WebApp.MVC.Controllers
                     //HTTP POST
                     var postTask = await client.PostAsync(u, content);
                     //postTask.Wait();
-                    //var result = postTask.Result;
+                    string result = postTask.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     if (postTask.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
                     }
-                    ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+                   
+                    ModelState.AddModelError(string.Empty, result);
                 }
             }          
 

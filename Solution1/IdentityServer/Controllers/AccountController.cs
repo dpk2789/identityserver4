@@ -101,12 +101,20 @@ namespace IdentityServer.Controllers
                 {
                     var role = _roleManager.FindByNameAsync("admin").Result;
                     await _userManager.AddToRoleAsync(user, role.Name);
-                    return RedirectToPage("RegisterConfirmation", new { email = request.email, returnUrl = returnUrl });
+                    return Ok(new AuthSuccessResponse
+                    {                       
+                        Success = true
+                    });
+                   // return RedirectToPage("RegisterConfirmation", new { email = request.email, returnUrl = returnUrl });
                 }
                 else
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    return Ok(new AuthSuccessResponse
+                    {
+                        Success = true
+                    });
+                   // return LocalRedirect(returnUrl);
                 }
             }
             return BadRequest(new AuthResult
