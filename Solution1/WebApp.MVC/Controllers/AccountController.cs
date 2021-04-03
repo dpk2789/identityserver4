@@ -73,6 +73,11 @@ namespace WebApp.MVC.Controllers
             return SignOut(new AuthenticationProperties() { RedirectUri = "Home/Index" }, "oidc", "cookie");
         }
 
+        public ActionResult RegisterConfirmation()
+        {
+            return View();
+        }
+
         [Authorize]
         public async Task<IActionResult> Weather()
         {
