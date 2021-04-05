@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Aow.Domain;
 using Aow.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CompaniesController : ControllerBase
     {
         private readonly AowDbContext _context;
