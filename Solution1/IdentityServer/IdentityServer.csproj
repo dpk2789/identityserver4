@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Views\RegisterConfirmation.html" />
+    <None Include="Views\Account\RegisterConfirmation.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

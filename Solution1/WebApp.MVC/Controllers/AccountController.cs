@@ -57,7 +57,7 @@ namespace WebApp.MVC.Controllers
                     string result = postTask.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     if (postTask.IsSuccessStatusCode)
                     {
-                        return RedirectToAction("Index");
+                        return RedirectToAction("RegisterConfirmation");
                     }
                    
                     ModelState.AddModelError(string.Empty, result);
