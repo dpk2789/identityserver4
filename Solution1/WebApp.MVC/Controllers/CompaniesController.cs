@@ -1,9 +1,12 @@
 ﻿using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApp.MVC.Services;
 
@@ -15,7 +18,7 @@ namespace WebApp.MVC.Controllers
 
         public CompaniesController(ITokenService tokenService)
         {
-            _tokenService = tokenService;            
+            _tokenService = tokenService;
         }
         public async Task<ActionResult> Index()
         {
@@ -23,11 +26,22 @@ namespace WebApp.MVC.Controllers
             {
                 var tokenResponse = await _tokenService.GetToken("read");
 
+                if (HttpContext.User.Identity is ClaimsIdentity identity)
+                {
+                    var principal = new ClaimsPrincipal(identity);                    
+                    string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var email = User.FindFirst("sub")?.Value;
+                    string email1 = User.FindFirst(ClaimTypes.Name)?.Value;
+                    var emailnew = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+                }
+                var claimsIdentity = this.User.Identity as ClaimsIdentity;
+                var userId1 = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+
                 client
                   .SetBearerToken(tokenResponse.AccessToken);
 
                 Uri u = new Uri("https://localhost:44363/api/Companies");
-              
+
                 //HTTP POST
                 var getCompanies = await client.GetAsync(u);
                 //postTask.Wait();

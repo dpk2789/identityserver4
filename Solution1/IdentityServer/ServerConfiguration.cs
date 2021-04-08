@@ -28,14 +28,45 @@ namespace IdentityServer
                 {
                     ClientId = "mvc_client",
                     AllowedGrantTypes = GrantTypes.Code,
+                    AllowOfflineAccess = true,
+                     RequirePkce = true,
+                       RequireConsent = true,
+                    RedirectUris = { "https://localhost:44368/signin-oidc" },
+                    FrontChannelLogoutUri = "https://localhost:44368/signout-oidc" ,
+                    PostLogoutRedirectUris = {"https://localhost:44368/signout-callback-oidc" },
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                     AllowedScopes = {"openid", "profile", "read"},
-                     RedirectUris = { "https://localhost:44368/signin-oidc" },
-             FrontChannelLogoutUri = "https://localhost:44368/signout-oidc" ,
-          PostLogoutRedirectUris = {"https://localhost:44368/signout-callback-oidc" },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "read"
+                    },
+
+                },
+         new Client
+                {
+                    ClientId = "mvc_thirdparty",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowOfflineAccess = true,
+                     RequirePkce = true,
+                       RequireConsent = true,
+                    RedirectUris = { "https://localhost:44368/signin-oidc" },
+                    FrontChannelLogoutUri = "https://localhost:44368/signout-oidc" ,
+                    PostLogoutRedirectUris = {"https://localhost:44368/signout-callback-oidc" },
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "read"
+                    },
+
                 },
 
         // interactive client using code flow + pkce
