@@ -65,7 +65,6 @@ namespace WebApp.MVC.Controllers
             }          
 
             return View(registerViewModel);
-
         }
 
         public ActionResult Logout()

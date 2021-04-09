@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using System.Reflection;
@@ -61,12 +60,12 @@ namespace WebApi1
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("PublicSecure", policy => policy.RequireClaim("client_id", "secret_client_id"));
-            //    options.AddPolicy("UserSecure", policy => policy.RequireClaim("roleType", "CanReaddata"));
-            //    options.AddPolicy("AdminSecure", policy => policy.RequireClaim("roleType", "CanUpdatedata"));
-            //});
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PublicSecure", policy => policy.RequireClaim("client_id", "secret_client_id"));
+                options.AddPolicy("UserSecure", policy => policy.RequireClaim("roleType", "CanReaddata"));
+                options.AddPolicy("AdminSecure", policy => policy.RequireClaim("roleType", "CanUpdatedata"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

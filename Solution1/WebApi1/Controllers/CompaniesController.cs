@@ -13,7 +13,7 @@ namespace WebApi1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(policy: "UserSecure")]
     public class CompaniesController : ControllerBase
     {
         private readonly AowDbContext _context;
