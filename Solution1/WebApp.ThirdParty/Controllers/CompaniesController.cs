@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApp.ThirdParty.ViewModels;
 
 namespace WebApp.ThirdParty.Controllers
 {
@@ -36,9 +38,11 @@ namespace WebApp.ThirdParty.Controllers
                 var getCompanies = await client.GetAsync(u);
                 //postTask.Wait();
                 string result = getCompanies.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+               // var viewModel = JsonConvert.DeserializeObject<CompaniesViewModel>(result);
+                var data = JsonConvert.DeserializeObject<List<CompaniesViewModel>>(result);
                 if (getCompanies.IsSuccessStatusCode)
                 {
-                    return View();
+                    return View(data);
                 }
                 if (getCompanies.IsSuccessStatusCode == false)
                 {
@@ -63,10 +67,11 @@ namespace WebApp.ThirdParty.Controllers
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(CompaniesViewModel viewModel)
         {
             try
             {
+
                 return RedirectToAction(nameof(Index));
             }
             catch
