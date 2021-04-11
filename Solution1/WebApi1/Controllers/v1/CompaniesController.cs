@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Aow.Domain;
 using Aow.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
+using WebApi1.Contracts.V1;
 
 namespace WebApi1.Controllers
 {
-    [Route("api/[controller]")]
+    //  [Route("api/[controller]")]
     [ApiController]
     [Authorize(policy: "UserSecure")]
     public class CompaniesController : ControllerBase
@@ -24,14 +25,13 @@ namespace WebApi1.Controllers
         }
 
         // GET: api/Companies
-        [HttpGet]
+        [HttpGet(ApiRoutes.Companies.GetAll)]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
             return await _context.Companies.ToListAsync();
         }
 
-        // GET: api/Companies/5
-        [HttpGet("{id}")]
+        [HttpGet(ApiRoutes.Companies.Get)]
         public async Task<ActionResult<Company>> GetCompany(Guid id)
         {
             var company = await _context.Companies.FindAsync(id);
@@ -44,10 +44,9 @@ namespace WebApi1.Controllers
             return company;
         }
 
-        // PUT: api/Companies/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
+        
+        //[HttpPut("{id}")]
+        [HttpPut(ApiRoutes.Companies.Update)]
         public async Task<IActionResult> PutCompany(Guid id, Company company)
         {
             if (id != company.Id)
@@ -76,20 +75,20 @@ namespace WebApi1.Controllers
             return NoContent();
         }
 
-        // POST: api/Companies
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
+        
+        [HttpPost(ApiRoutes.Companies.Create)]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
+            var user = HttpContext.User.Identity;
+            var request = HttpContext.Request;
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCompany", new { id = company.Id }, company);
         }
-
-        // DELETE: api/Companies/5
-        [HttpDelete("{id}")]
+               
+        //[HttpDelete("{id}")]
+        [HttpDelete(ApiRoutes.Companies.Delete)]
         public async Task<ActionResult<Company>> DeleteCompany(Guid id)
         {
             var company = await _context.Companies.FindAsync(id);

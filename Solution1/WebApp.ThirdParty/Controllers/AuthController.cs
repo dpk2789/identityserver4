@@ -1,6 +1,8 @@
 ﻿using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -10,6 +12,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using WebApp.ThirdParty.Helpers;
 using WebApp.ThirdParty.ViewModels;
 
 namespace WebApp.ThirdParty.Controllers
@@ -33,7 +36,7 @@ namespace WebApp.ThirdParty.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    Uri u = new Uri("https://localhost:44311/connect/token");
+                    Uri u = new Uri(IdentityUrls.Identity.Login);
 
                     var content = new FormUrlEncodedContent(new[]
                                     {
@@ -41,7 +44,7 @@ namespace WebApp.ThirdParty.Controllers
                                         new KeyValuePair<string, string>("client_id", "mvc_thirdparty"),
                                          new KeyValuePair<string, string>("client_secret","secret"),
                                         new KeyValuePair<string, string>("scope", "read"),
-                                         new KeyValuePair<string, string>("username","bob"),
+                                         new KeyValuePair<string, string>("username",viewModel.Email),
                                         new KeyValuePair<string, string>("password", "Pass123$")
                                       });
                     //HTTP POST
@@ -91,7 +94,7 @@ namespace WebApp.ThirdParty.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    Uri u = new Uri("https://localhost:44311/api/account/registeruser");
+                    Uri u = new Uri(IdentityUrls.Identity.Register);
 
                     var json = JsonConvert.SerializeObject(new { registerViewModel.Email, registerViewModel.Password });
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -115,6 +118,21 @@ namespace WebApp.ThirdParty.Controllers
             }
 
             return View(registerViewModel);
+        }
+
+        public IActionResult LogOut()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+
+            foreach (var key in HttpContext.Request.Cookies.Keys)
+            {
+                HttpContext.Response.Cookies.Append(key, "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1) });
+            }
+            return RedirectToAction("Index", "Home");
+
         }
     }
 }

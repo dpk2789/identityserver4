@@ -25,7 +25,7 @@ namespace WebApi1
         {
             services.AddInfrastructure(Configuration);
             services.AddControllers();
-
+            services.AddRazorPages();
 
             services.AddAuthentication("Bearer")
                .AddIdentityServerAuthentication("Bearer", options =>
@@ -82,11 +82,6 @@ namespace WebApi1
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });           
-
             app.UseSwagger(options =>
             {
                 options.RouteTemplate = "/swagger/{documentName}/swagger.json";
@@ -97,6 +92,21 @@ namespace WebApi1
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger Demo API");
                 options.RoutePrefix = string.Empty;
             });
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllers();
+            //});   
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
+
+
         }
     }
 }
