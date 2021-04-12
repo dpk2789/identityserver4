@@ -81,10 +81,10 @@ namespace IdentityServer
             }
 
             app.UseRouting();
-           app.UseCors(builder => builder
-                         .AllowAnyOrigin()
-                         .AllowAnyMethod()
-                         .AllowAnyHeader());
+            app.UseCors(builder => builder
+                          .AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseAuthorization();

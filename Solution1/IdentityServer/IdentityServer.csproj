@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <NoWin32Manifest>true</NoWin32Manifest>  
+    <UserSecretsId>361b1fb0-ee21-4f99-8083-d69ebaf4d2ef</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
