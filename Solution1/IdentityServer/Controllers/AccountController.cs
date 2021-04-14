@@ -22,7 +22,7 @@ namespace IdentityServer.Controllers
 {
     [ApiController]
     public class AccountController : ControllerBase
-    {      
+    {
         private readonly UserManager<IdentityUser> _userManager;
         RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
@@ -31,7 +31,7 @@ namespace IdentityServer.Controllers
         public AccountController(IIdentityService identityService, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager, IWebHostEnvironment env,
             IEmailSender emailSender)
-        {           
+        {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
@@ -102,10 +102,10 @@ namespace IdentityServer.Controllers
                     var role = _roleManager.FindByNameAsync("admin").Result;
                     await _userManager.AddToRoleAsync(user, role.Name);
                     return Ok(new AuthSuccessResponse
-                    {                       
+                    {
                         Success = true
                     });
-                   // return RedirectToPage("RegisterConfirmation", new { email = request.email, returnUrl = returnUrl });
+                    // return RedirectToPage("RegisterConfirmation", new { email = request.email, returnUrl = returnUrl });
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace IdentityServer.Controllers
                     {
                         Success = true
                     });
-                   // return LocalRedirect(returnUrl);
+                    // return LocalRedirect(returnUrl);
                 }
             }
             return BadRequest(new AuthResult
@@ -143,7 +143,7 @@ namespace IdentityServer.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
-            return RedirectToAction("Index","HomeABC");
+            return RedirectToAction("Index", "HomeABC");
         }
 
 

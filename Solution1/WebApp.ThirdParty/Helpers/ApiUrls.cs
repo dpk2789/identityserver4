@@ -2,7 +2,8 @@
 {
     public static class ApiUrls
     {
-        public const string Rootlocal = "https://localhost:44363/api";      
+       // public const string Rootlocal = "https://localhost:44363/api";
+        public const string Rootlocal = "https://localhost:44363/api";
         public const string Version = "v1";
         public const string Base = Rootlocal + "/"+ Version ;
 

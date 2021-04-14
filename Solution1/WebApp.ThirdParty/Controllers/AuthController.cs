@@ -45,7 +45,7 @@ namespace WebApp.ThirdParty.Controllers
                                          new KeyValuePair<string, string>("client_secret","secret"),
                                         new KeyValuePair<string, string>("scope", "read"),
                                          new KeyValuePair<string, string>("username",viewModel.Email),
-                                        new KeyValuePair<string, string>("password", "Pass123$")
+                                        new KeyValuePair<string, string>("password", viewModel.Password)
                                       });
                     //HTTP POST
                     var postTask = await client.PostAsync(u, content);
@@ -118,6 +118,12 @@ namespace WebApp.ThirdParty.Controllers
             }
 
             return View(registerViewModel);
+        }
+
+        public IActionResult RegisterConfirmation()
+        {
+
+            return View();
         }
 
         public IActionResult LogOut()

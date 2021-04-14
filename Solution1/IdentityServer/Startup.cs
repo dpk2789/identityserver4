@@ -2,13 +2,16 @@ using IdentityServer.Helpers;
 using IdentityServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Reflection;
+using static IdentityServer4.IdentityServerConstants;
 
 namespace IdentityServer
 {
@@ -16,7 +19,6 @@ namespace IdentityServer
     {
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
@@ -50,14 +52,35 @@ namespace IdentityServer
             })
              .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
 
-            services.AddIdentityServer()
-               .AddInMemoryClients(ServerConfiguration.Clients)
-               .AddInMemoryIdentityResources(ServerConfiguration.IdentityResources)
-               .AddInMemoryApiResources(ServerConfiguration.ApiResources)
-               .AddInMemoryApiScopes(ServerConfiguration.ApiScopes)
-              .AddAspNetIdentity<IdentityUser>()
-               .AddProfileService<ProfileService>()
-               .AddDeveloperSigningCredential();
+            var rsa = new RsaKeyService(Environment, TimeSpan.FromDays(30));
+            services.AddSingleton<RsaKeyService>(provider => rsa);
+
+            var builder = services.AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+                options.EmitStaticAudienceClaim = true;
+            })
+                .AddAspNetIdentity<IdentityUser>().AddProfileService<ProfileService>(); ;
+
+            // in-memory, code config
+            builder.AddInMemoryIdentityResources(ServerConfiguration.IdentityResources);
+            builder.AddInMemoryApiScopes(ServerConfiguration.ApiScopes);
+            builder.AddInMemoryClients(ServerConfiguration.Clients);
+            builder.AddInMemoryApiResources(ServerConfiguration.ApiResources);
+            builder.AddInMemoryApiScopes(ServerConfiguration.ApiScopes);
+
+            //  var rsaCertificate = new X509Certificate2(Path.Combine(Environment.ContentRootPath, "rsaCert.pfx"), "1234");
+
+            if (!Environment.IsDevelopment())
+                builder.AddSigningCredential(rsa.GetKey(), RsaSigningAlgorithm.RS512);
+
+            if (Environment.IsDevelopment())
+                builder.AddDeveloperSigningCredential();
 
             services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
@@ -88,17 +111,24 @@ namespace IdentityServer
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
             //app.UseEndpoints(endpoints =>
             //{
-            //    endpoints.MapDefaultControllerRoute();
+            //    endpoints.MapGet("/", async context =>
+            //    {
+            //        await context.Response.WriteAsync("Hello World!");
+            //    });
             //});
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //    endpoints.MapRazorPages();
+            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+            });
         }
     }
 }
