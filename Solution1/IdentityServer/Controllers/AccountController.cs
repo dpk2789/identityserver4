@@ -83,8 +83,7 @@ namespace IdentityServer.Controllers
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail",
+                var callbackUrl = Url.Page("/",
                     pageHandler: null,
                     values: new { userId = user.Id, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);

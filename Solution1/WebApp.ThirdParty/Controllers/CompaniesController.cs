@@ -84,7 +84,7 @@ namespace WebApp.ThirdParty.Controllers
                         token = User.FindFirst("AcessToken")?.Value;
                         var emailnew = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
                     }
-                    Uri u = new Uri("https://localhost:44363/api/Companies");
+                    Uri u = new Uri(ApiUrls.Companies.Create);
 
                     var json = JsonConvert.SerializeObject(new { viewModel.CompanyName, viewModel.State });
                     var content = new StringContent(json, Encoding.UTF8, "application/json");

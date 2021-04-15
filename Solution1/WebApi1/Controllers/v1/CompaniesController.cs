@@ -14,7 +14,8 @@ namespace WebApi1.Controllers
 {
     //  [Route("api/[controller]")]
     [ApiController]
-    [Authorize(policy: "UserSecure")]
+    //[Authorize(policy: "UserSecure")]
+    [Authorize]
     public class CompaniesController : ControllerBase
     {
         private readonly AowDbContext _context;
@@ -32,6 +33,7 @@ namespace WebApi1.Controllers
         }
 
         [HttpGet(ApiRoutes.Companies.Get)]
+       // [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(Guid id)
         {
             var company = await _context.Companies.FindAsync(id);
@@ -84,7 +86,7 @@ namespace WebApi1.Controllers
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+            return CreatedAtAction("api/v1/companies", new { id = company.Id }, company);
         }
                
         //[HttpDelete("{id}")]
