@@ -27,7 +27,8 @@ namespace WebApp.ThirdParty.Controllers
                 if (HttpContext.User.Identity is ClaimsIdentity identity)
                 {
                     token = User.FindFirst("AcessToken")?.Value;
-                    var emailnew = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+                    var userclaim = User.FindFirst("UserRoleClaim")?.Value;
+                    var emailnew = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
                 }
 
                 client.SetBearerToken(token);

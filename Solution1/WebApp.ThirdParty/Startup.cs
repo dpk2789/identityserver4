@@ -19,8 +19,25 @@ namespace WebApp.ThirdParty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();            
+            services.AddControllersWithViews();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireClaim("UserRoleClaim", "admin"));
+                //options.AddPolicy("Manager", policy => policy.RequireClaim("Role", "Manager"));
+                options.AddPolicy("Manager", policy => policy
+                    .RequireAssertion(context =>
+                        context.User.HasClaim("UserRoleClaim", "manager")
+                        || context.User.HasClaim("UserRoleClaim", "admin")));
+            });
+
+            services.AddMvc();         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

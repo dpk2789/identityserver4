@@ -60,13 +60,12 @@ namespace IdentityServer
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes =
-                    {
-                        IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        "read"
-                    },
-
+                    AllowedScopes = new List<string>
+                        {
+                            IdentityServerConstants.StandardScopes.OpenId,
+                            IdentityServerConstants.StandardScopes.Profile,
+                            "read" ,"IdentityServer.Api.read"
+                        }
                 },
 
         // interactive client using code flow + pkce
@@ -111,13 +110,21 @@ namespace IdentityServer
                     "write",
                     "read"
                 }
-            }
+            },
+           new ApiResource
+                  {
+                Name = "IdentityServer.Api",
+                    Scopes = new List<string> { "IdentityServer.Api.read"},
+                    //ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
+                    //UserClaims = new List<string> {"role"}
+                  },
         };
 
         public static IEnumerable<ApiScope> ApiScopes = new List<ApiScope>
         {
             new ApiScope("read"),
-            new ApiScope("write")
+            new ApiScope("write"),
+             new ApiScope("IdentityServer.Api.read")
         };
 
 

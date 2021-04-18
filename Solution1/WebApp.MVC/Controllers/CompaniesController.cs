@@ -32,7 +32,7 @@ namespace WebApp.MVC.Controllers
                     string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                     var email = User.FindFirst("sub")?.Value;
                     string email1 = User.FindFirst(ClaimTypes.Name)?.Value;
-                    var emailnew = User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+                    var emailnew = User.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
                 }
                 var claimsIdentity = this.User.Identity as ClaimsIdentity;
                 var userId1 = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;

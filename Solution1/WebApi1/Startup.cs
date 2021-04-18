@@ -63,8 +63,8 @@ namespace WebApi1
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("PublicSecure", policy => policy.RequireClaim("client_id", "secret_client_id"));
-                options.AddPolicy("UserSecure", policy => policy.RequireClaim("roleType", "CanReaddata"));
-                options.AddPolicy("AdminSecure", policy => policy.RequireClaim("roleType", "CanUpdatedata"));
+                options.AddPolicy("UserSecure", policy => policy.RequireClaim("role", "manager"));
+                options.AddPolicy("AdminSecure", policy => policy.RequireClaim("role", "admin"));
             });
         }
 

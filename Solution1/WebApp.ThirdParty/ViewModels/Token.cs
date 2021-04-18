@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 
 namespace WebApp.ThirdParty.ViewModels
 {
@@ -11,5 +8,6 @@ namespace WebApp.ThirdParty.ViewModels
         public string expires_in { get; set; }
         public string ClientName { get; set; }
         public string ClientPassword { get; set; }
+        public string scope { get; set; }
     }
 }

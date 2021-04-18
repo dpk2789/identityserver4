@@ -1,3 +1,4 @@
+using IdentityServer.Context;
 using IdentityServer.Helpers;
 using IdentityServer.Services;
 using Microsoft.AspNetCore.Builder;
@@ -39,19 +40,12 @@ namespace IdentityServer
                       });
             });
 
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-            services.AddDbContext<AppDbContext>(options =>
-             options.UseSqlServer(connectionString,
-                 sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
-
+            services.AddInfrastructure(Configuration);
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Tokens.ProviderMap.Add("Default", new TokenProviderDescriptor(typeof(IUserTwoFactorTokenProvider<IdentityUser>)));
             })
-             .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
-
+           .AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
             var rsa = new RsaKeyService(Environment, TimeSpan.FromDays(30));
             services.AddSingleton<RsaKeyService>(provider => rsa);
 
@@ -65,14 +59,14 @@ namespace IdentityServer
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddAspNetIdentity<IdentityUser>().AddProfileService<ProfileService>(); ;
+                .AddAspNetIdentity<IdentityUser>().AddProfileService<ProfileService>();
 
             // in-memory, code config
             builder.AddInMemoryIdentityResources(ServerConfiguration.IdentityResources);
             builder.AddInMemoryApiScopes(ServerConfiguration.ApiScopes);
             builder.AddInMemoryClients(ServerConfiguration.Clients);
             builder.AddInMemoryApiResources(ServerConfiguration.ApiResources);
-            builder.AddInMemoryApiScopes(ServerConfiguration.ApiScopes);
+          
 
             //  var rsaCertificate = new X509Certificate2(Path.Combine(Environment.ContentRootPath, "rsaCert.pfx"), "1234");
 

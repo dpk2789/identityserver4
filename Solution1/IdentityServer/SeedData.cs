@@ -1,5 +1,6 @@
 ﻿using IdentityModel;
 using IdentityServer;
+using IdentityServer.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +59,7 @@ namespace IdentityServer
                           new Claim(JwtClaimTypes.GivenName, "Alice"),
                           new Claim(JwtClaimTypes.FamilyName, "Smith"),
                           new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+                            new Claim(JwtClaimTypes.Role, "admin"),
                 }).Result;
                 if (!result.Succeeded)
                 {
@@ -92,7 +94,7 @@ namespace IdentityServer
                           new Claim(JwtClaimTypes.GivenName, "Bob"),
                           new Claim(JwtClaimTypes.FamilyName, "Smith"),
                           new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                          new Claim("location", "somewhere")
+                            new Claim(JwtClaimTypes.Role, "manager"),
                                 }).Result;
                 if (!result.Succeeded)
                 {
