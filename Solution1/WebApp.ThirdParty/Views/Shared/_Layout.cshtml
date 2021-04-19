@@ -47,42 +47,39 @@
             </div>
         </nav>
     </header>
-    <h3 class="title has-text-centered">Admin Panel</h3>
+
     <div class="container">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-3">
-                    <div class="menu">
-                        @if ((await authService.AuthorizeAsync(User, "Manager")).Succeeded)
-                        {
-                            var role = User.Claims.Where(x => x.Type == "UserRoleClaim").FirstOrDefault().Value;
-                            var userclaim = Context.User.Claims.Where(x => x.Type == "UserRoleClaim").FirstOrDefault().Value;
-                            <p class="menu-label">Store Menu</p>
-                            <ul class="menu-list">
-                                <li><a asp-page="/Admin/Index">Products</a></li>
-                                <li><a asp-page="/Admin/OrderManagement">Order Management</a></li>
-                                <li><a asp-page="/Admin/Stock">Stock</a></li>
-                            </ul>}
-                        @if ((await authService.AuthorizeAsync(User, "Admin")).Succeeded)
-                        {
-                            <p class="menu-label">Admin Menu</p>
-                            <ul class="menu-list">
-                                <li><a asp-page="/Admin/ConfigureUsers">Configure Users</a></li>
-                            </ul>}
-                        <p class="menu-label"></p>
+        <h3 class="title has-text-centered">Admin Panel</h3>
+        <div class="columns">
+            <div class="column is-3">
+                <div class="menu">
+                    @if ((await authService.AuthorizeAsync(User, "Manager")).Succeeded)
+                    {
+                        var role = User.Claims.Where(x => x.Type == "UserRoleClaim").FirstOrDefault().Value;
+                        var userclaim = Context.User.Claims.Where(x => x.Type == "UserRoleClaim").FirstOrDefault().Value;
+                        <p class="menu-label">Store Menu</p>
                         <ul class="menu-list">
-                            <li><a asp-page="/Index">Back to Main</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="column is-9">
-                    @RenderBody()
+                            <li><a asp-page="/Admin/Index">Products</a></li>
+                            <li><a asp-page="/Admin/OrderManagement">Order Management</a></li>
+                            <li><a asp-page="/Admin/Stock">Stock</a></li>
+                        </ul>}
+                    @if ((await authService.AuthorizeAsync(User, "Admin")).Succeeded)
+                    {
+                        <p class="menu-label">Admin Menu</p>
+                        <ul class="menu-list">
+                            <li><a asp-page="/Admin/ConfigureUsers">Configure Users</a></li>
+                        </ul>}
+                    <p class="menu-label"></p>
+                    <ul class="menu-list">
+                        <li><a asp-page="/Index">Back to Main</a></li>
+                    </ul>
                 </div>
             </div>
+            <div class="column is-9">
+                @RenderBody()
+            </div>
         </div>
-
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - WebApp.ThirdParty - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

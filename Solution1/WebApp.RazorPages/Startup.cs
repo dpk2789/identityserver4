@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace WebApp.ThirdParty
+namespace WebApp.RazorPages
 {
     public class Startup
     {
@@ -19,26 +19,13 @@ namespace WebApp.ThirdParty
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-
+            services.AddRazorPages();
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Auth/Login";
+                options.LoginPath = "/Account/Login";
             });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy => policy.RequireClaim("UserRoleClaim", "admin"));
-                //options.AddPolicy("Manager", policy => policy.RequireClaim("Role", "Manager"));
-                options.AddPolicy("Manager", policy => policy
-                    .RequireAssertion(context =>
-                        context.User.HasClaim("UserRoleClaim", "manager")
-                        || context.User.HasClaim("UserRoleClaim", "admin")));
-            });
-
-            services.AddMvc();         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,22 +37,21 @@ namespace WebApp.ThirdParty
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();          
-            app.UseAuthentication();
+            app.UseRouting();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
